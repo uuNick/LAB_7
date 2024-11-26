@@ -1,9 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const buyerRouter = require('./routes/buyers');
-const furnitureModelRouter = require('./routes/furnitureModels');
-const contractRouter = require('./routes/contracts');
-const saleRouter = require('./routes/sales');
+const buyerRouter = require('./routes/buyerRouter');
+const furnitureModelRouter = require('./routes/furnitureModelRouter');
+const contractRouter = require('./routes/contractRouter');
+const saleRouter = require('./routes/saleRouter');
 
 const app = express();
 const port = 3000;

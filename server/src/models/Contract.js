@@ -5,8 +5,7 @@ module.exports = (sequelize, Buyer) => {
     contract_number: {
       type: DataTypes.INTEGER,
       primaryKey: true,
-      allowNull: false,
-      unique: true
+      autoIncrement: true
     },
     contract_date: {
       type: DataTypes.DATEONLY,

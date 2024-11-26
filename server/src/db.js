@@ -6,9 +6,9 @@ const Sale = require('./models/Sale');
 
 const sequelize = new Sequelize('furniture', 'postgres', '1357924680', {
   dialect: 'postgres',
-  host: 'localhost', // например, localhost
-  port: 5432, // Порт PostgreSQL
-  logging: false // Отключить логирование запросов к базе данных
+  host: 'localhost',
+  port: 5432,
+  logging: false 
 });
 
 const BuyerModel = Buyer(sequelize);
