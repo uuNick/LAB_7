@@ -1,5 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require("../db");
+const Contract = require("./Contract");
+const FurnitureModel = require("./FurnitureModel");
 
 const Sale = sequelize.define('Sale', {
     id: {
@@ -19,8 +21,6 @@ const Sale = sequelize.define('Sale', {
             model: Contract,
             key: 'contract_number'
         },
-        onUpdate: 'CASCADE',
-        onDelete: 'RESTRICT'
     },
     furniture_model_id: {
         type: DataTypes.INTEGER,
@@ -29,12 +29,10 @@ const Sale = sequelize.define('Sale', {
             model: FurnitureModel,
             key: 'furniture_model_id'
         },
-        onUpdate: 'CASCADE',
-        onDelete: 'RESTRICT'
     }
-}, {
-    tableName: 'sales',
-    timestamps: false
 });
+
+//Sale.belongsTo(FurnitureModel, { foreignKey: 'furniture_model_id', onDelete: 'RESTRICT' });
+//Sale.belongsTo(Contract, { foreignKey: 'contract_number', onDelete: 'RESTRICT' });
 
 module.exports = Sale;

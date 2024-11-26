@@ -24,9 +24,6 @@ const FurnitureModel = sequelize.define('FurnitureModel', {
     type: DataTypes.DECIMAL(10, 2),
     allowNull: false
   }
-}, {
-  tableName: 'furniture_models',
-  timestamps: false
 });
 
 module.exports = FurnitureModel;

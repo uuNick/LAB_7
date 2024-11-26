@@ -20,9 +20,6 @@ const Buyer = sequelize.define('Buyer', {
     type: DataTypes.STRING,
     allowNull: false
   }
-}, {
-  tableName: 'buyers',
-  timestamps: false
 });
 
 module.exports = Buyer;
