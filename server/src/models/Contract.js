@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
+const sequelize = require("../db");
 
-module.exports = (sequelize, Buyer) => {
+
   const Contract = sequelize.define('Contract', {
     contract_number: {
       type: DataTypes.INTEGER,
@@ -30,7 +31,6 @@ module.exports = (sequelize, Buyer) => {
     timestamps: false
   });
 
-  Contract.belongsTo(Buyer, { foreignKey: 'buyer_id', onDelete: 'RESTRICT' }); // Связь один-ко-многим с Buyer
+  //Contract.belongsTo(Buyer, { foreignKey: 'buyer_id', onDelete: 'RESTRICT' }); // Связь один-ко-многим с Buyer
 
-  return Contract;
-};
+module.exports = Contract;
