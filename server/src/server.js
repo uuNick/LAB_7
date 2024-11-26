@@ -4,6 +4,7 @@ const sequelize = require("./db");
 const bodyParser = require('body-parser');
 const router = require("./routes/allRoutes");
 const models = require("./models/Models");
+const { populateFurnitureModels, populateBuyers, populateContracts, populateSales } = require('./seed');
 
 const port = process.env.SERVER_PORT;
 const app = express();
@@ -12,13 +13,25 @@ app.use(bodyParser.json());
 app.use(express.json());
 app.use("/api", router);
 
+async function seedDatabase() {
+  try {
+      await populateBuyers(20);
+      await populateFurnitureModels(20);
+      await populateContracts(20);
+      await populateSales(20);
+      console.log('Все таблицы успешно заполнены!');
+  } catch (error) {
+      console.error('Ошибка при заполнении базы данных:', error);
+      process.exit(1);
+  }
+}
 
 async function syncModels() {
   try {
     await models.Buyer.sync();
-    await models.FurnitureModel.sync(); 
-    await models.Contract.sync(); 
-    await models.Sale.sync(); 
+    await models.FurnitureModel.sync();
+    await models.Contract.sync();
+    await models.Sale.sync();
     console.log('Модели успешно синхронизированы!');
   } catch (error) {
     console.error('Ошибка синхронизации моделей:', error);
@@ -28,17 +41,15 @@ async function syncModels() {
 
 const start = async () => {
   try {
-    //console.log("DB_NAME:", process.env.DB_NAME);
-    await sequelize.authenticate(); // Подключение к БД
-    await syncModels(); // Вызов функции синхронизации
-
-    // Заполнение базы данных начальными данными
-    //await seedDatabase();
+    await sequelize.authenticate();
+    await syncModels(); 
+    await seedDatabase();
 
     app.listen(port, () => console.log(`Server listening on port ${port}`));
   } catch (e) {
     console.log(e);
   }
 };
+
 
 start();

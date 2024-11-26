@@ -26,6 +26,5 @@ const Contract = sequelize.define('Contract', {
   }
 });
 
-//Contract.belongsTo(Buyer, { foreignKey: 'buyer_id', onDelete: 'RESTRICT' });
 
 module.exports = Contract;
