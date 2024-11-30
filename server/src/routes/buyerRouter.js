@@ -5,6 +5,8 @@ const BuyerController = require("../controllers/buyerController");
 // 1. Создание нового покупателя
 router.post("/", BuyerController.create);
 
+router.get("/withoutPag", BuyerController.getAllWithoutPag);
+
 // 2. Получение всех покупателей с пагинацией
 router.get("/", BuyerController.getAll);
 
@@ -25,5 +27,6 @@ router.put("/:id", BuyerController.updateBuyer);
 
 // 8. Удаление покупателя
 router.delete("/:id", BuyerController.deleteBuyer); 
+
 
 module.exports = router;

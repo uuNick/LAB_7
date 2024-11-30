@@ -5,6 +5,8 @@ const ContractController = require("../controllers/contractController");
 // 1. Создание нового контракта
 router.post("/", ContractController.create);
 
+router.get("/withoutPag", ContractController.getAllWithoutPag);
+
 // 2. Получение всех контрактов с пагинацией
 router.get("/", ContractController.getAll);
 
@@ -25,5 +27,6 @@ router.put("/:id", ContractController.updateContract);
 
 // 8. Удаление контракта
 router.delete("/:id", ContractController.deleteContract); 
+
 
 module.exports = router;

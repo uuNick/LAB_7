@@ -1,0 +1,11 @@
+.buttons {
+    margin-bottom: 50px;
+}
+
+.buttons span {
+    text-decoration: none;
+    color: #121212;
+    font-size: 1.6em;
+    line-height: 18px;
+    margin: 0 20px;
+}

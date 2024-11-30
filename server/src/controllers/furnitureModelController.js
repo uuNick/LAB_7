@@ -23,6 +23,16 @@ class FurnitureModelController {
         }
     }
 
+    async getAllWithoutPag(req, res) {
+        try {
+            const furnitureModels = await FurnitureModel.findAll();
+            return res.json(furnitureModels);
+        } catch {
+            console.error('Ошибка при получении моделей мебели:', error);
+            return res.status(500).json({ error: 'Ошибка сервера' });
+        }
+    }
+
     // 2. Получение списка записей с поддержкой пагинации
     async getAll(req, res) {
         const { page = 1, limit = 10 } = req.query;
@@ -75,7 +85,7 @@ class FurnitureModelController {
                     [Op.between]: [price_from, price_to],
                 };
             }
-            else{
+            else {
                 return res.status(400).json({ message: "Диапазон цены не указан" });
             }
             const furnitureModels = await FurnitureModel.findAll({

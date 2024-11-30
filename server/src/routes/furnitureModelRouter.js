@@ -1,9 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const FurnitureModelController = require("../controllers/furnitureModelController");
+const furnitureModelController = require('../controllers/furnitureModelController');
 
 // 1. Создание новой модели мебели
 router.post("/", FurnitureModelController.create);
+
+router.get("/withoutPag", FurnitureModelController.getAllWithoutPag);
 
 // 2. Получение всех моделей мебели с пагинацией
 router.get("/", FurnitureModelController.getAll);
@@ -25,5 +28,6 @@ router.put("/:id", FurnitureModelController.updateFurnitureModel);
 
 // 8. Удаление модели мебели
 router.delete("/:id", FurnitureModelController.deleteFurnitureModel); 
+
 
 module.exports = router;

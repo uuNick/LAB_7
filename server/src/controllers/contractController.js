@@ -26,6 +26,16 @@ class ContractController {
         }
     }
 
+    async getAllWithoutPag(req, res) {
+        try {
+            const contracts = await Contract.findAll();
+            return res.json(contracts);
+        } catch {
+            console.error('Ошибка при получении контрактов:', error);
+            return res.status(500).json({ error: 'Ошибка сервера' });
+        }
+    }
+
     // 2. Получение всех контрактов с пагинацией
     async getAll(req, res) {
         const { page = 1, limit = 10 } = req.query;

@@ -1,9 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const SaleContrtoller = require("../controllers/saleController");
+const saleController = require('../controllers/saleController');
 
 // 1. Создание новой продажи
 router.post("/", SaleContrtoller.create);
+
+router.get("/withoutPag", saleController.getAllWithoutPag);
 
 // 2. Получение всех продаж с пагинацией
 router.get("/", SaleContrtoller.getAll);
@@ -25,5 +28,6 @@ router.put("/:id", SaleContrtoller.updateSale);
 
 // 8. Удаление продажи
 router.delete("/:id", SaleContrtoller.deleteSale); 
+
 
 module.exports = router;

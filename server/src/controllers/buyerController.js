@@ -21,6 +21,16 @@ class BuyerController {
     }
   }
 
+  async getAllWithoutPag(req, res) {
+    try {
+      const buyers = await Buyer.findAll();
+      return res.json(buyers);
+    } catch {
+      console.error('Ошибка при получении покупателей:', error);
+      return res.status(500).json({ error: 'Ошибка сервера' });
+    }
+  }
+
   // 2. Получение списка записей с поддержкой пагинации
   async getAll(req, res) {
     const { page = 1, limit = 10 } = req.query; // Параметры пагинации

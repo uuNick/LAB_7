@@ -20,6 +20,16 @@ class SaleContrtoller {
         }
     }
 
+    async getAllWithoutPag(req, res){
+        try{
+          const sales = await Sale.findAll();
+          return res.json(sales);
+        } catch{
+          console.error('Ошибка при получении продаж:', error);
+          return res.status(500).json({ error: 'Ошибка сервера' });
+        }
+      }
+
     // 2. Получение списка записей с поддержкой пагинации
     async getAll(req, res) {
         const { page = 1, limit = 10 } = req.query; // Параметры пагинации
