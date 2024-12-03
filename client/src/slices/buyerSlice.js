@@ -1,4 +1,11 @@
-import { FETCH_BUYER, FETCH_BUYER_SUCCESS, FETCH_BUYER_FAILURE, FETCH_BUYER_BY_ID, FETCH_BUYER_BY_ID_SUCCESS, FETCH_ALL_BUYERS, FETCH_ALL_BUYERS_SUCCESS } from '../actionTypes';
+import {
+    FETCH_BUYER,
+    FETCH_BUYER_SUCCESS,
+    FETCH_BUYER_FAILURE,
+    FETCH_BUYER_BY_ID_SUCCESS,
+    FETCH_ALL_BUYERS_SUCCESS,
+    CREATE_BUYER_SUCCESS,
+} from '../actionTypes';
 
 const initialState = {
     buyer: [],
@@ -15,8 +22,6 @@ const initialState = {
 const buyerSlice = (state = initialState, action) => {
     switch (action.type) {
         case FETCH_BUYER:
-        case FETCH_BUYER_BY_ID:
-        case FETCH_ALL_BUYERS:
             return { ...state, loading: true, error: null };
         case FETCH_BUYER_SUCCESS:
             return {
@@ -31,7 +36,15 @@ const buyerSlice = (state = initialState, action) => {
         case FETCH_BUYER_BY_ID_SUCCESS:
             return { ...state, loading: false, selectedBuyer: action.payload, error: null };
         case FETCH_ALL_BUYERS_SUCCESS:
-            return {...state, loading: false, allBuyers: action.payload, error: null};
+            return { ...state, loading: false, allBuyers: action.payload, error: null };
+        case CREATE_BUYER_SUCCESS:
+            return {
+                ...state,
+                allBuyers: [...state.allBuyers, action.payload],
+                loading: false,
+                error: null,
+            };
+
         case FETCH_BUYER_FAILURE:
             return {
                 ...state,

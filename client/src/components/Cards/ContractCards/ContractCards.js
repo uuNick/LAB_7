@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { fetchContract } from '../../../actions/Contract/contractAction';
 import { fetchAllBuyers } from '../../../actions/Buyer/buyerAction';
 import '../Cards.css';
-import { Card, CardHeader, CardMedia, CardContent, Typography } from '@mui/material';
+import { Card, CardHeader, CardMedia, CardContent, Typography, Button } from '@mui/material';
 import Numeration from '../../Numeration/Numeration';
 
 
@@ -11,12 +12,11 @@ const ContractCards = () => {
     const dispatch = useDispatch();
     const [buyerNames, setBuyerNames] = useState({});
     const { contract, currentPage, totalPages, limit, loading, error } = useSelector(state => state.contract);
-    const {allBuyers} = useSelector(state => state.buyer);
+    const { allBuyers } = useSelector(state => state.buyer);
 
     useEffect(() => {
         dispatch(fetchContract(currentPage, limit));
-        if(allBuyers.length == 0)
-        {
+        if (allBuyers.length == 0) {
             dispatch(fetchAllBuyers());
         }
     }, [dispatch, currentPage, limit]);
@@ -24,6 +24,12 @@ const ContractCards = () => {
     const handlePageChange = (page) => {
         dispatch(fetchContract(page, limit));
     };
+
+    const navigate = useNavigate()
+
+    const goToAddContract = () => {
+        navigate("/addContract");
+    }
 
     if (loading) return <p>Загрузка...</p>;
     if (error) return <p>Ошибка: {error}</p>;
@@ -56,6 +62,7 @@ const ContractCards = () => {
                 ))}
             </div>
             <Numeration totalPages={totalPages} currentPage={currentPage} handlePageChange={handlePageChange} />
+            <Button onClick={goToAddContract} color='primary.contrastText' sx={{ marginBottom: "50px" }}>Добавить контракт</Button>
         </div>
     );
 };

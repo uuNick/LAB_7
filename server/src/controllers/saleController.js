@@ -1,9 +1,21 @@
 const Sale = require("../models/Sale");
+const Contract = require("../models/Contract");
+const FurnitureModel = require("../models/FurnitureModel");
 
 class SaleContrtoller {
     // 1. Создание новой записи
     async create(req, res) {
         const { quantity, contract_number, furniture_model_id } = req.body;
+
+        const contract = await Contract.findByPk(contract_number);
+        if (!contract) {
+            return res.status(400).json({ message: 'Контрак с указанным номером не найден' });
+        }
+
+        const furniture = await FurnitureModel.findByPk(furniture_model_id);
+        if (!furniture) {
+            return res.status(400).json({ message: 'Мебель с указанным ID не найдена' });
+        }
 
         try {
             const sale = await Sale.create({
@@ -11,7 +23,7 @@ class SaleContrtoller {
                 contract_number,
                 furniture_model_id,
             });
-            return res.status(201).json(sale); // 201 Создано
+            return res.status(201).json(sale);
         } catch (error) {
             console.error(error);
             return res
@@ -20,15 +32,15 @@ class SaleContrtoller {
         }
     }
 
-    async getAllWithoutPag(req, res){
-        try{
-          const sales = await Sale.findAll();
-          return res.json(sales);
-        } catch{
-          console.error('Ошибка при получении продаж:', error);
-          return res.status(500).json({ error: 'Ошибка сервера' });
+    async getAllWithoutPag(req, res) {
+        try {
+            const sales = await Sale.findAll();
+            return res.json(sales);
+        } catch {
+            console.error('Ошибка при получении продаж:', error);
+            return res.status(500).json({ error: 'Ошибка сервера' });
         }
-      }
+    }
 
     // 2. Получение списка записей с поддержкой пагинации
     async getAll(req, res) {
@@ -158,7 +170,7 @@ class SaleContrtoller {
     // 8. Обновление записи
     async updateSale(req, res) {
         const { id } = req.params;
-        const { quantity} = req.body;
+        const { quantity } = req.body;
 
         try {
             if (!id) {

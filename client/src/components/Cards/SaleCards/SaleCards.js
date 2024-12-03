@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { fetchSale } from '../../../actions/Sale/saleAction';
 import { fetchAllFurnitureModels } from '../../../actions/FurnitureModel/furnitureModelActions';
 import '../Cards.css';
-import { Card, CardHeader, CardContent, Typography } from '@mui/material';
+import { Card, CardHeader, CardContent, Typography, Button } from '@mui/material';
 import Numeration from '../../Numeration/Numeration';
 
 
@@ -22,6 +23,12 @@ const SaleCards = () => {
     const handlePageChange = (page) => {
         dispatch(fetchSale(page, limit));
     };
+
+    const navigate = useNavigate();
+
+    const goToAddSale = () => {
+        navigate('/addSale');
+    }
 
     if (loading) return <p>Загрузка...</p>;
     if (error) return <p>Ошибка: {error}</p>;
@@ -54,6 +61,7 @@ const SaleCards = () => {
                 ))}
             </div>
             <Numeration totalPages={totalPages} currentPage={currentPage} handlePageChange={handlePageChange} />
+            <Button onClick={goToAddSale} color='primary.contrastText' sx={{ marginBottom: "50px" }}>Добавить покупку</Button>
         </div>
     );
 };

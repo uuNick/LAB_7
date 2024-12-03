@@ -1,11 +1,13 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { fetchFurniture } from '../../../actions/FurnitureModel/furnitureModelActions';
 import '../Cards.css';
 // import { styled } from '@mui/material/styles';
 // import { red } from '@mui/material/colors';
 import { Card, CardHeader, CardMedia, CardContent, Typography, Button } from '@mui/material';
 import Numeration from '../../Numeration/Numeration';
+
 
 
 const FurnitureModels = () => {
@@ -20,6 +22,12 @@ const FurnitureModels = () => {
     dispatch(fetchFurniture(page, limit));
   };
 
+  const navigate = useNavigate();
+
+  const goToAddFurniture = () => {
+    navigate('/addFurnitureModel');
+  }
+
   if (loading) return <p>Загрузка...</p>;
   if (error) return <p>Ошибка: {error}</p>;
 
@@ -27,7 +35,7 @@ const FurnitureModels = () => {
     <div className="wrapper">
       <div className="cards">
         {furniture.map(item => (
-          <Card key={item.furniture_model_id} sx={{ maxWidth: 345 }}>
+          <Card key={item.furniture_model_id} sx={{ width: 345 }}>
             <CardHeader
               title={item.furniture_name}
               subheader={item.model}
@@ -50,6 +58,7 @@ const FurnitureModels = () => {
         ))}
       </div>
       <Numeration totalPages={totalPages} currentPage={currentPage} handlePageChange={handlePageChange} />
+      <Button onClick={goToAddFurniture} color='primary.contrastText' sx={{ marginBottom: "50px" }}>Добавить модель мебели</Button>
     </div>
   );
 };

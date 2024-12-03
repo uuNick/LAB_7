@@ -5,11 +5,11 @@ import { Button } from '@mui/material';
 const Numeration = ({currentPage, totalPages, handlePageChange}) => {
     return (
         <div className="buttons">
-            <Button variant='contained' onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
+            <Button variant='contained' color='primary.contrastText' onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
                 &lt;
             </Button>
             <span>Страница {currentPage} из {totalPages}</span>
-            <Button variant='contained' onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
+            <Button variant='contained' color='primary.contrastText' onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
                 &gt;
             </Button>
         </div>

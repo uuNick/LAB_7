@@ -1,4 +1,9 @@
-import { FETCH_FURNITURE, FETCH_FURNITURE_SUCCESS, FETCH_FURNITURE_FAILURE, FETCH_ALL_FURNITURE, FETCH_ALL_FURNITURE_SUCCESS } from '../actionTypes';
+import {
+  FETCH_FURNITURE,
+  FETCH_FURNITURE_SUCCESS,
+  FETCH_FURNITURE_FAILURE,
+  FETCH_ALL_FURNITURE_SUCCESS
+} from '../actionTypes';
 
 const initialState = {
   furniture: [],
@@ -14,7 +19,6 @@ const initialState = {
 const furnitureSlice = (state = initialState, action) => {
   switch (action.type) {
     case FETCH_FURNITURE:
-    case FETCH_ALL_FURNITURE:
       return { ...state, loading: true, error: null };
     case FETCH_FURNITURE_SUCCESS:
       return {

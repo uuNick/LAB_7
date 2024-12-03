@@ -1,14 +1,20 @@
 const Contract = require("../models/Contract");
+const Buyer = require("../models/Buyer");
 
 class ContractController {
 
     async create(req, res) {
-        const { contract_date, execution_date, buyer_id } =
-            req.body;
+        const { contract_date, execution_date, buyer_id } = req.body;
 
         try {
             if (!contract_date || !execution_date || !buyer_id) {
                 return res.status(400).json({ error: 'Не все необходимые поля заполнены' });
+            }
+
+            
+            const buyer = await Buyer.findByPk(buyer_id);
+            if (!buyer) {
+                return res.status(400).json({ message: 'Покупатель с указанным ID не найден' });
             }
 
             const contract = await Contract.create({
@@ -16,7 +22,7 @@ class ContractController {
                 execution_date,
                 buyer_id,
             });
-            return res.status(201).json(contract); // 201 Создано
+            return res.status(201).json(contract); 
 
         } catch (error) {
             console.error("Ошибка при создании контракта:", error);
