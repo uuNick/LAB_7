@@ -11,8 +11,8 @@ router.get("/withoutPag", saleController.getAllWithoutPag);
 // 2. Получение всех продаж с пагинацией
 router.get("/", SaleContrtoller.getAll);
 
-// 3. Сортировка продаж
-//router.get("/sorted", SaleContrtoller.getSorted);
+//3. Сортировка продаж
+router.get("/sorted", SaleContrtoller.getSorted);
 
 // 4. Фильтрация продаж
 router.get("/filtered", SaleContrtoller.getFiltered);

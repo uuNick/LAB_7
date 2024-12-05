@@ -58,13 +58,20 @@ class FurnitureModelController {
 
     // 3. Получение списка записей с поддержкой сортировки
     async getSorted(req, res) {
-        const { sortBy = "furniture_name", order = "ASC" } = req.query;
+        const { sortBy = "furniture_name", order = "ASC", page = 1, limit = 10 } = req.query;
+        const offset = (page - 1) * limit;
 
         try {
-            const furnitureModels = await FurnitureModel.findAll({
+            const furnitureModels = await FurnitureModel.findAndCountAll({
                 order: [[sortBy, order]],
+                offset: offset,
+                limit: limit,
             });
-            return res.json(furnitureModels);
+            return res.json({
+                total: furnitureModels.count,
+                pages: Math.ceil(furnitureModels.count / limit),
+                data: furnitureModels.rows,
+            });
         } catch (error) {
             console.error("Ошибка при получении моделей мебели:", error);
             return res
@@ -103,18 +110,25 @@ class FurnitureModelController {
 
     // 5. Получение списка записей с поддержкой поиска
     async search(req, res) {
-        const { search } = req.query;
+        const { search, page = 1, limit = 10 } = req.query;
+        const offset = (page - 1) * limit;
 
         try {
-            const furnitureModels = await FurnitureModel.findAll({
+            const furnitureModels = await FurnitureModel.findAndCountAll({
                 where: {
                     [Op.or]: [
                         { furniture_name: { [Op.like]: `%${search}%` } },
                         { characteristics: { [Op.like]: `%${search}%` } },
                     ],
                 },
+                offset: offset,
+                limit: limit,
             });
-            return res.json(furnitureModels);
+            return res.json({
+                total: furnitureModels.count,
+                pages: Math.ceil(furnitureModels.count / limit),
+                data: furnitureModels.rows,
+            });
         } catch (error) {
             console.error("Ошибка при поиске моделей мебели:", error);
             return res
@@ -214,7 +228,7 @@ class FurnitureModelController {
                 where: { furniture_model_id: id },
             });
 
-            return res.status(204).send(); // 204 Нет содержимого
+            return res.status(200).json({ message: "Мебель успешно удалена" });
         } catch (error) {
             return res
                 .status(500)

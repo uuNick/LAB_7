@@ -1,6 +1,8 @@
 const Sale = require("../models/Sale");
 const Contract = require("../models/Contract");
 const FurnitureModel = require("../models/FurnitureModel");
+const { Op } = require("sequelize");
+
 
 class SaleContrtoller {
     // 1. Создание новой записи
@@ -65,22 +67,29 @@ class SaleContrtoller {
         }
     }
 
-    // 3. Получение списка записей с поддержкой сортировки
-    // async getSorted(req, res) {
-    //     const { sortBy = "publication_name", order = "ASC" } = req.query;
+    //3. Получение списка записей с поддержкой сортировки
+    async getSorted(req, res) {
+        const { sortBy = "id", order = "ASC", page = 1, limit = 10 } = req.query;
+        const offset = (page - 1) * limit;
 
-    //     try {
-    //         const publications = await Publication.findAll({
-    //             order: [[sortBy, order]],
-    //         });
-    //         return res.json(publications);
-    //     } catch (error) {
-    //         console.error("Ошибка при получении продаж:", error);
-    //         return res
-    //             .status(500)
-    //             .json({ message: "Ошибка при получении продаж", error });
-    //     }
-    // }
+        try {
+            const sales = await Sale.findAndCountAll({
+                order: [[sortBy, order]],
+                offset: offset,
+                limit: limit,
+            });
+            return res.json({
+                total: sales.count,
+                pages: Math.ceil(sales.count / limit),
+                data: sales.rows,
+            });
+        } catch (error) {
+            console.error("Ошибка при получении продаж:", error);
+            return res
+                .status(500)
+                .json({ message: "Ошибка при получении продаж", error });
+        }
+    }
 
     // 4. Получение списка записей с поддержкой фильтрации
     async getFiltered(req, res) {
@@ -107,15 +116,25 @@ class SaleContrtoller {
 
     // 5. Получение списка записей с поддержкой поиска
     async search(req, res) {
-        const { search } = req.query;
+        const { search, page = 1, limit = 10 } = req.query;
+        const offset = (page - 1) * limit;
 
         try {
-            const sales = await Sale.findAll({
-                where: {
-                    furniture_model_id: { [Op.like]: `%${search}%` }
-                },
+            const numericSearch = parseInt(search, 10);
+            const whereClause = isNaN(numericSearch) ?
+                { furniture_model_id: { [Op.like]: `%${search}%` } } :
+                { furniture_model_id: numericSearch };
+
+            const sales = await Sale.findAndCountAll({
+                where: whereClause,
+                offset: offset,
+                limit: limit,
             });
-            return res.json(sales);
+            return res.json({
+                total: sales.count,
+                pages: Math.ceil(sales.count / limit),
+                data: sales.rows,
+            });
         } catch (error) {
             console.error("Ошибка при поиске продаж:", error);
             return res
@@ -173,9 +192,6 @@ class SaleContrtoller {
         const { quantity } = req.body;
 
         try {
-            if (!id) {
-                return res.status(400).json({ message: "ID продажи не указано" });
-            }
 
             const sale = await Sale.findOne({
                 where: { id: id },
@@ -185,7 +201,6 @@ class SaleContrtoller {
                 return res.status(404).json({ message: "Контракт не найден" });
             }
 
-            // Обновляем только те поля, которые были переданы
             const updatedFields = {};
             if (quantity)
                 updatedFields.quantity = quantity;
@@ -195,7 +210,7 @@ class SaleContrtoller {
                 return res.status(400).json({ message: "Нет данных для обновления" });
             }
 
-            // Обновление контракта и возврат обновленного объекта
+            // Обновление продажи и возврат обновленного объекта
             const [_, updatedSales] = await Sale.update(
                 updatedFields,
                 {
@@ -232,7 +247,7 @@ class SaleContrtoller {
                 where: { id: id },
             });
 
-            return res.status(204).send(); // 204 Нет содержимого
+            return res.status(200).json({ message: "Продажа успешно удален" });
         } catch (error) {
             return res
                 .status(500)

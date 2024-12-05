@@ -56,13 +56,20 @@ class BuyerController {
 
   // 3. Получение списка записей с поддержкой сортировки
   async getSorted(req, res) {
-    const { sortBy = "buyer_name", order = "ASC" } = req.query;
+    const { sortBy = "buyer_name", order = "ASC", page = 1, limit = 10 } = req.query;
+    const offset = (page - 1) * limit;
 
     try {
-      const buyers = await Buyer.findAll({
+      const buyers = await Buyer.findAndCountAll({
         order: [[sortBy, order]],
+        offset: offset,
+        limit: limit,
       });
-      return res.json(buyers);
+      return res.json({
+        total: buyers.count,
+        pages: Math.ceil(buyers.count / limit),
+        data: buyers.rows,
+      });
     } catch (error) {
       console.error("Ошибка при получении покупателей:", error);
       return res
@@ -73,7 +80,7 @@ class BuyerController {
 
   // 4. Получение списка записей с поддержкой фильтрации
   async getFiltered(req, res) {
-    const { buyer_address, city } = req.query;
+    const { buyer_address } = req.query;
 
     try {
       if (!buyer_address) {
@@ -95,18 +102,25 @@ class BuyerController {
 
   // 5. Получение списка записей с поддержкой поиска
   async search(req, res) {
-    const { search } = req.query;
+    const { search, page = 1, limit = 10 } = req.query;
+    const offset = (page - 1) * limit;
 
     try {
-      const buyers = await Buyer.findAll({
+      const buyers = await Buyer.findAndCountAll({
         where: {
           [Op.or]: [
             { buyer_name: { [Op.like]: `%${search}%` } },
             { buyer_address: { [Op.like]: `%${search}%` } },
           ],
         },
+        offset: offset,
+        limit: limit,
       });
-      return res.json(buyers);
+      return res.json({
+        total: buyers.count,
+        pages: Math.ceil(buyers.count / limit),
+        data: buyers.rows,
+      });
     } catch (error) {
       console.error("Ошибка при поиске покупателей:", error);
       return res
@@ -206,7 +220,7 @@ class BuyerController {
         where: { buyer_id: id },
       });
 
-      return res.status(204).send(); // 204 Нет содержимого
+      return res.status(200).json({ message: "Покупатель успешно удален" });
     } catch (error) {
       return res
         .status(500)

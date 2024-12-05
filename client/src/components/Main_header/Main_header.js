@@ -29,7 +29,7 @@ const Main_header = () => {
         <header>
             <div className="header_wrapper">
                 <div className="first_block">
-                    <p className="menu_link">TEXT</p>
+                    <p className="menu_link">Проект мебель</p>
                 </div>
                 <div className="menu">
                     <nav className="body_menu flex">
@@ -37,7 +37,7 @@ const Main_header = () => {
                             <li className="menu_item"> <Link to="/furniture" className="menu_link">Мебель</Link></li>
                             <li className="menu_item"> <Link to="/buyers" className="menu_link">Покупатели</Link></li>
                             <li className="menu_item"> <Link to="/contracts" className="menu_link">Контракты</Link></li>
-                            <li className="menu_item"> <Link to="/sales" className="menu_link">Покупки</Link></li>
+                            <li className="menu_item"> <Link to="/sales" className="menu_link">Продажи</Link></li>
                         </ul>
                     </nav>
                 </div>

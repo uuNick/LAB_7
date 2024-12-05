@@ -5,12 +5,18 @@ import {
     FETCH_BUYER_BY_ID_SUCCESS,
     FETCH_ALL_BUYERS_SUCCESS,
     CREATE_BUYER_SUCCESS,
+    UPDATE_BUYER_SUCCESS,
+    DELETE_BUYER_SUCCESS,
+    SORT_BUYER_SUCCESS,
+    FIND_BUYER_SUCCESS
 } from '../actionTypes';
 
 const initialState = {
     buyer: [],
     allBuyers: [],
     selectedBuyer: null,
+    sortedBuyer: [],
+    findBuyer: [],
     total: 0,
     currentPage: 1,
     totalPages: 0,
@@ -24,15 +30,7 @@ const buyerSlice = (state = initialState, action) => {
         case FETCH_BUYER:
             return { ...state, loading: true, error: null };
         case FETCH_BUYER_SUCCESS:
-            return {
-                ...state,
-                buyer: action.payload.data,
-                total: action.payload.total,
-                currentPage: action.payload.currentPage,
-                totalPages: action.payload.pages,
-                loading: false,
-                error: null,
-            };
+            return handlePagination(state, action.payload, 'buyer');
         case FETCH_BUYER_BY_ID_SUCCESS:
             return { ...state, loading: false, selectedBuyer: action.payload, error: null };
         case FETCH_ALL_BUYERS_SUCCESS:
@@ -45,6 +43,27 @@ const buyerSlice = (state = initialState, action) => {
                 error: null,
             };
 
+        case UPDATE_BUYER_SUCCESS:
+            const updatedBuyers = state.allBuyers.map((buyer) =>
+                buyer.buyer_id === action.payload.buyer_id ? action.payload : buyer
+            );
+            return {
+                ...state,
+                allBuyers: updatedBuyers,
+                loading: false,
+                error: null,
+            };
+        case DELETE_BUYER_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                buyer: state.buyer.filter(item => item.buyer_id !== action.payload),
+                error: null,
+            };
+        case SORT_BUYER_SUCCESS:
+            return handlePagination(state, action.payload, 'sortedBuyer');
+        case FIND_BUYER_SUCCESS:
+            return handlePagination(state, action.payload, 'findBuyer');
         case FETCH_BUYER_FAILURE:
             return {
                 ...state,
@@ -55,5 +74,15 @@ const buyerSlice = (state = initialState, action) => {
             return state;
     }
 };
+
+const handlePagination = (state, payload, dataKey) => ({
+    ...state,
+    [dataKey]: payload.data,
+    total: payload.total,
+    currentPage: payload.currentPage,
+    totalPages: payload.pages,
+    loading: false,
+    error: null,
+});
 
 export default buyerSlice;

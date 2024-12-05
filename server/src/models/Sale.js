@@ -30,7 +30,10 @@ const Sale = sequelize.define('Sale', {
             key: 'furniture_model_id'
         },
     }
-});
+},
+    {
+        foreignKeyConstraints: true
+    });
 
 //Sale.belongsTo(FurnitureModel, { foreignKey: 'furniture_model_id', onDelete: 'RESTRICT' });
 //Sale.belongsTo(Contract, { foreignKey: 'contract_number', onDelete: 'RESTRICT' });

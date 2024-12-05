@@ -17,8 +17,8 @@ const validationSchema = Yup.object({
     contract_date: Yup.date().required('Дата контракта обязательна'),
     execution_date: Yup.date().required('Дата исполнения контракта обязательна')
         .min(Yup.ref('contract_date'), 'Дата начала исполнения контракта не может быть раньше даты создания контракта'),
-    buyer_id: Yup.number().required('Укажите id пользователя')
-        .min(1, 'Id пользователя не может быть меньше 1'),
+    buyer_id: Yup.number().required('Укажите id покупателя')
+        .min(1, 'Id покупателя не может быть меньше 1'),
 });
 
 const AddContract = () => {
@@ -119,7 +119,7 @@ const AddContract = () => {
                     margin="normal"
                     id="buyer_id"
                     name="buyer_id"
-                    label="Идентификатор пользователя"
+                    label="Идентификатор покупателя"
                     value={formik.values.buyer_id}
                     onChange={formik.handleChange}
                     error={formik.touched.buyer_id && Boolean(formik.errors.buyer_id)}

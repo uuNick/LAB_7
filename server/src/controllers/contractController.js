@@ -1,5 +1,6 @@
 const Contract = require("../models/Contract");
 const Buyer = require("../models/Buyer");
+const { Op } = require("sequelize");
 
 class ContractController {
 
@@ -11,7 +12,7 @@ class ContractController {
                 return res.status(400).json({ error: 'Не все необходимые поля заполнены' });
             }
 
-            
+
             const buyer = await Buyer.findByPk(buyer_id);
             if (!buyer) {
                 return res.status(400).json({ message: 'Покупатель с указанным ID не найден' });
@@ -22,7 +23,7 @@ class ContractController {
                 execution_date,
                 buyer_id,
             });
-            return res.status(201).json(contract); 
+            return res.status(201).json(contract);
 
         } catch (error) {
             console.error("Ошибка при создании контракта:", error);
@@ -67,13 +68,20 @@ class ContractController {
 
     // 3. Сортировка контрактов
     async getSorted(req, res) {
-        const { sortBy = "contract_date", order = "ASC" } = req.query;
+        const { sortBy = "contract_date", order = "ASC", page = 1, limit = 10 } = req.query;
+        const offset = (page - 1) * limit;
 
         try {
-            const contracts = await Contract.findAll({
+            const contracts = await Contract.findAndCountAll({
                 order: [[sortBy, order]],
+                offset: offset,
+                limit: limit,
             });
-            return res.json(contracts);
+            return res.json({
+                total: contracts.count,
+                pages: Math.ceil(contracts.count / limit),
+                data: contracts.rows,
+            });
         } catch (error) {
             console.error("Ошибка при получении контрактов:", error);
             return res
@@ -114,27 +122,27 @@ class ContractController {
 
     // 5. Поиск контрактов
     async search(req, res) {
-        const { buyer_id, contarct_date } = req.query;
-
-        const whereClause = {};
-
-        if (buyer_id) {
-            whereClause.buyer_id = buyer_id;
-        }
-
-        if (contarct_date) {
-            const parsedDate = new Date(contarct_date);
-            if (isNaN(parsedDate.getTime())) {
-                throw new Error('Invalid date format. Use YYYY-MM-DD.');
-            }
-            whereClause.contarct_date = parsedDate; //Op.eq ?
-        }
+        const { search, page = 1, limit = 10 } = req.query;
+        const offset = (page - 1) * limit;
 
         try {
-            const contracts = await Contract.findAll({
+            const dateSearch = new Date(search);
+            let whereClause;
+
+            if (!isNaN(dateSearch)) { // Проверяем, является ли dateSearch валидной датой
+                whereClause = { contract_date: { [Op.eq]: dateSearch } };
+            }
+
+            const contracts = await Contract.findAndCountAll({
                 where: whereClause,
+                offset: offset,
+                limit: limit,
             });
-            return res.json(contracts);
+            return res.json({
+                total: contracts.count,
+                pages: Math.ceil(contracts.count / limit),
+                data: contracts.rows,
+            });
         } catch (error) {
             console.error("Ошибка при поиске контрактов:", error);
             return res
@@ -167,13 +175,9 @@ class ContractController {
     // 7. Обновление контракта
     async updateContract(req, res) {
         const { id } = req.params;
-        const { contarct_date, execution_date } = req.body;
+        const { execution_date } = req.body;
 
         try {
-            if (!id) {
-                return res.status(400).json({ message: "ID контракта не указан" });
-            }
-
             const contract = await Contract.findOne({
                 where: { contract_number: id },
             });
@@ -184,8 +188,6 @@ class ContractController {
 
             // Обновляем только те поля, которые были переданы
             const updatedFields = {};
-            if (contarct_date)
-                updatedFields.contarct_date = contarct_date;
             if (execution_date)
                 updatedFields.execution_date = execution_date;
 
